@@ -1,0 +1,143 @@
+/* editairlines css */
+.airlinesTable {
+  /* text-shadow: 1px 1px 1px  purple;  */
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+}
+.airlinesTable input {
+  width: 120px;
+  align-content: center;
+  text-align: center;
+}
+.updateAirlineBtn {
+  width: 80px;
+  opacity: 1;
+  font-size: 10px;
+  font-weight: bold;
+  /* position: relative; */
+  cursor: pointer;
+  position: relative;
+  padding: 10px;
+  border-radius: 3%;
+  line-height: 5px;
+  border: 1px solid #012880;
+  background-color: #dfcfbe;
+}
+.deleteAirlineBtn {
+  font-size: 20px;
+  height: 10px;
+  width: 5px;
+  opacity: 0.9;
+}
+.deleteAirlineBtn:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+/* edit customers css */
+.customerImage {
+  height: 60px;
+  width: 55px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+.editCustomerCard {
+  position: relative;
+  text-align: center;
+  width: 85%;
+  left: 8%;
+  height: auto;
+  background-color: #aac9db;
+  box-shadow: 2px 2px 2px black;
+  border-radius: 5px;
+  margin: 1px;
+  margin-bottom: 5px;
+  padding: 1px;
+  display: flex;
+  opacity: 0.75;
+  flex-direction: row;
+  align-items: center;
+}
+.editCustomerCard:hover {
+  background-color: #c4deec;
+}
+
+.idTitle {
+  width: 70px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.customerEditInput {
+  justify-content: left;
+  width: 100px;
+  outline: none;
+  margin-left: 0.5px;
+  margin-right: 14px;
+  flex-direction: column;
+}
+
+.customerEditLabel {
+  justify-content: center;
+  padding: 5px;
+  outline: none;
+  margin-left: 0.5px;
+  margin-right: 0.5px;
+  display: flex;
+  flex-direction: column;
+}
+.editCustomerButtons {
+  flex-direction: column;
+  margin: 1px;
+  display: flex;
+  margin-left: 10px;
+}
+.labelCustomer {
+  width: 70px;
+  margin-right: 0;
+  font-size: 10px;
+  font-weight: bold;
+  /* display: flex;  */
+}
+.ccEmail {
+  margin-right: 60px;
+}
+
+.inputCustomer {
+  width: 120px;
+  height: 24px;
+  font-size: 12px;
+  background-color: rgb(255, 255, 255);
+  text-align: center;
+  border-radius: 6%;
+}
+.inputCustomer:focus {
+  background-color: rgb(167, 241, 177);
+}
+.divCustomer {
+  width: 100px;
+  height: 24px;
+  font-size: 10px;
+  text-align: left;
+  /* background-color: rgb(255, 255, 255); */
+  /* display: flex;  */
+}
+.editCustomerBtn {
+  width: 47px;
+  height: auto;
+  font-size: 10px;
+  padding: 2px;
+  margin: 2px;
+  border-radius: 8%;
+  background-color: #dfcfbe;
+  font-weight: bold;
+  margin-left: 0;
+}
+.editCustomerBtn:hover {
+  cursor: pointer;
+  background-color: #eee4da;
+}
+
+/*full hight on all devices height: 100vh; */

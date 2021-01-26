@@ -1,0 +1,183 @@
+stored procedures :
+
+ALTER PROCEDURE [dbo].[CHECKDEPARTURES_DATETIME]
+AS
+BEGIN
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where Flights.DEPARTURE_TIME < Flights.LANDING_TIME 
+  and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+  and DEPARTURE_TIME >= GETDATE() 
+
+END
+
+ALTER PROCEDURE [dbo].[CHECKLANDINGTIME_DATETIME]
+
+AS
+BEGIN
+
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID  
+  where Flights.DEPARTURE_TIME < Flights.LANDING_TIME
+  and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+  and LANDING_TIME >= DATEADD(HOUR, -4, getdate()) 
+END
+
+ALTER PROCEDURE [dbo].[CLEAR_ALL_TABLES]
+
+AS
+BEGIN
+DELETE FROM Tickets;
+DELETE FROM Flights;
+DELETE FROM Customers;
+DELETE FROM AirlineCompanies;
+DELETE FROM Countries;
+ 
+END
+
+ALTER PROCEDURE [dbo].[SEARCH_FLIGHT]
+@search_airlineName varchar(50),
+@search_destinationCountry varchar(50),
+@search_departureFrom varchar(50),
+@search_flightNumber bigint,
+@flight_Type varchar(50)
+AS
+BEGIN
+
+if (@search_airlineName != 'null' and @flight_Type = 'Landing')
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where AirlineCompanies.AIRLINE_NAME Like @search_airlineName
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE()) 
+
+ if (@search_destinationCountry  != 'null' and @flight_Type = 'Landing')
+
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where DC.COUNTRY_NAME Like @search_destinationCountry
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE())
+
+ if (@search_departureFrom  != 'null' and @flight_Type = 'Landing')
+
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where OC.COUNTRY_NAME Like @search_departureFrom
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE())
+
+ if (@search_flightNumber > 0 and @flight_Type = 'Landing')
+
+ select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where Flights.ID Like @search_flightNumber
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE())
+
+
+ if (@search_airlineName  != 'null' and @flight_Type = 'Departure')
+
+   select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID 
+  where AirlineCompanies.AIRLINE_NAME like @search_airlineName
+   and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+   and DEPARTURE_TIME >= getdate()
+
+ if (@search_destinationCountry  != 'null' and @flight_Type = 'Departure')
+
+   select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID 
+  where DC.COUNTRY_NAME like @search_destinationCountry
+   and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+   and DEPARTURE_TIME >= getdate()
+ if (@search_departureFrom  != 'null' and @flight_Type = 'Departure')
+
+   select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID 
+  where OC.COUNTRY_NAME like @search_departureFrom
+   and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+   and DEPARTURE_TIME >= getdate()
+ if (@search_flightNumber > 0 and @flight_Type = 'Departure')
+
+   select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID 
+  where Flights.ID like @search_flightNumber
+   and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+   and DEPARTURE_TIME >= getdate()
+
+
+ if (@search_airlineName  != 'null' and @flight_Type = 'All')
+
+    select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where AirlineCompanies.AIRLINE_NAME Like @search_airlineName
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE()) 
+   or
+   (AirlineCompanies.AIRLINE_NAME Like @search_airlineName
+     and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+     and DEPARTURE_TIME >= getdate())
+ if (@search_destinationCountry  != 'null' and @flight_Type = 'All')
+
+    select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where DC.COUNTRY_NAME Like @search_destinationCountry
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE()) 
+   or
+   (DC.COUNTRY_NAME Like @search_destinationCountry
+     and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+     and DEPARTURE_TIME >= getdate())
+ if (@search_departureFrom  != 'null' and @flight_Type = 'All')
+
+    select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where OC.COUNTRY_NAME Like @search_departureFrom
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE()) 
+   or
+   ( OC.COUNTRY_NAME Like @search_departureFrom
+     and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+     and DEPARTURE_TIME >= getdate())
+
+else if  @search_flightNumber > 0 and @flight_Type = 'All'
+
+    select AirlineCompanies.AIRLINE_NAME,Flights.ID,OC.COUNTRY_NAME AS 'DEPARTING FROM',DC.COUNTRY_NAME AS 'ARRIVING TO', Flights.DEPARTURE_TIME, Flights.LANDING_TIME from Flights
+  INNER JOIN Countries AS OC ON Flights.ORIGIN_COUNTRY_CODE = oc.ID
+  INNER JOIN Countries AS DC ON Flights.DESTINATION_COUNTRY_CODE = DC.ID
+  INNER JOIN AirlineCompanies ON Flights.AIRLINE_COMPANY_ID = AirlineCompanies.ID
+  where Flights.ID = @search_flightNumber
+   and LANDING_TIME <= DATEADD(HOUR,12,getdate())
+   and LANDING_TIME >= DATEADD(HOUR,-4,GETDATE()) 
+   or
+    (Flights.ID = @search_flightNumber
+     and DEPARTURE_TIME <= DATEADD(HOUR,12,getdate())
+     and DEPARTURE_TIME >= getdate())
+END  
